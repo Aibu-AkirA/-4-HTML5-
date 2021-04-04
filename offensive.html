@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FlukeBaseBall</title>
+        <meta charset="utf-8">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+        <link rel="icon" href="data:;base64,iVBORw0KGgo=">
+        <style>
+            #mainDiv{
+                width: 1150px; height: 720px;
+                border: 7px ridge #BDBDBD;
+                background: black;
+            }
+            #dos{
+                z-index: 2;
+                position: absolute;
+                width: 1150px; height: 20px;
+                border-bottom: 3px solid #BDBDBD;
+                background: #0404B4;
+                color: white
+            }
+            #xB{
+                position: absolute;
+                height: 18px; width: 50px;
+                left: 1098px; top:1px;  
+            }
+            #main{
+                width: 800px;
+                position: absolute;
+                top: 150px; left: 60px;
+                z-index: 1;
+            }
+            #scoreboard{
+                z-index: 2;
+                position: absolute;
+                top: 45px; left: 80px;
+                width: 700px;
+                background: #071907;
+                color:white;
+                font-size: 30px;
+                border: 2px solid;
+                border-collapse: collapse
+            }
+            td, th{
+                border: 2px solid;
+                text-align: center;   
+            }
+            #numBut{
+                z-index: 2;
+                position: absolute;
+                top: 600px; left: 80px;
+                width: 600px;
+                background: gray;
+                color: black;
+                font-size: 30px;
+                border-collapse: collapse
+            }
+            #readyBut{
+                z-index: 2;
+                position: absolute;
+                top: 600px; left: 80px;
+                width: 600px; 
+                background: #1C1C1C;
+                color: crimson;
+                text-align: center;
+                font-size: 70px;
+            }
+            #batterScreen, #pitcherScreen{
+                z-index: 2;
+                border: 10px double white;
+                border-radius: 5px;
+                width: 200px; height: 60px;
+                position: absolute;
+                top: 220px;
+                font-size: 40px;
+                color: white;
+                text-align: center;
+            }
+            #batterScreen{
+                left: 40px;
+            }
+            #pitcherScreen{
+                left: 440px;
+            }
+            #ballCount{
+                z-index: 2;
+                width: 250px; height: 60px;
+                position: absolute;
+                top: 450px; left: 850px;
+                font-size: 40px;
+                color: white;
+                text-align: center;
+            }
+            .countLED, .bsLed{
+                z-index: 2;
+                border-radius: 50px;
+                background: #151515;
+                width: 50px;
+            }
+            .diamond{
+                z-index: 2;
+                position: absolute;
+                width: 150px
+            }
+            #one{
+                top: 160px; left: 970px;
+            }
+            #two{
+                top: 80px; left: 890px;
+            }
+            #three{
+                top: 160px; left: 810px;
+            }           
+            #refereeBox{
+                z-index: 2;
+                border: 15px double #2E64FE;
+                border-radius: 5px;
+                width: 200px; height: 200px;
+                position: absolute;
+                left: 435px; top: 330px;
+                font-size: 40px;
+                color: aliceblue;
+                text-align: center;  
+            }
+            #backMain{
+                z-index: 3;
+                width: 200px;
+                border: 1px solid gray;
+                top: 660px; left: 870px; 
+                position: absolute;
+                background: #1C1C1C;
+                color: crimson;
+                text-align: center;
+                font-size: 30px;
+            }
+            #imgBox{
+                z-index: 3;
+                position: absolute;
+                border: 20px double #2E64FE;
+                border-radius: 5px;
+                top: 150px; left: 150px;
+                width: 850px; height: 400px;
+                background-color: black;
+                overflow: hidden;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            #inImg{
+                position: absolute;
+                top:0px; left:0px;
+                height: 120%;
+            }
+        </style>
+        <script>
+            var pitcher = 0;
+            var batter = 0;
+            var batChe = 0;
+            var ballCount = 0;
+            var strikeCount = 0;
+            var outCount = 0;
+            var inning = sessionStorage.getItem("inning")
+            inning *= 1;
+            var myTeamScore = sessionStorage.getItem("myTeamScore")
+            myTeamScore *= 1;
+            var cpuTeamScore = sessionStorage.getItem("cpuTeamScore")
+            cpuTeamScore *= 1;
+            var runner = [0,0,0,0]
+            var runnerCount = 0;
+            var baseBox = [0,0,0]
+            var myInn = [0,0,0,0,0,0,0,0,0]
+            var cpuInn = [0,0,0,0,0,0,0,0,0]
+            var myScoreNow = 0;
+            var picThink = [0, 0, 0]
+            var numHtml ="";
+            var audioB = new Audio('audio/Homerun.mp3');
+            var audioP = new Audio('audio/Pitch.mp3');
+            var audioC = new Audio('audio/Sports_Crowd.mp3');
+            
+            var myHit = sessionStorage.getItem("myTeamHit");
+            myHit *= 1;
+            var my4Ball = sessionStorage.getItem("myTeam4Ball");
+            my4Ball *= 1;
+            var cpuHit = sessionStorage.getItem("cpuTeamHit");
+            var cpu4Ball = sessionStorage.getItem("cpuTeam4Ball");
+            
+            for(var i=1; i<10; i++){
+                myInn[i-1] = sessionStorage.getItem("myInn"+i);
+                myInn[i-1] *=1;
+                cpuInn[i-1] = sessionStorage.getItem("cpuInn"+i)
+                cpuInn[i-1] *=1;
+            }
+            
+            function runnerScore(hit,rc){
+                for (var i = 0; i < 4; i++){
+                    if(runner[i] != 0){
+                        runner[i] += hit
+                        if(runner[i] > 3){
+                            myTeamScore += 1;
+                            myScoreNow += 1;
+                            runner[i] = 0;
+                        }
+                    }
+                }
+                if(hit == 4){
+                    myTeamScore += 1;
+                    myScoreNow += 1;
+                }else{
+                    runner[rc] = hit;
+                }
+                if(runnerCount == 3){
+                    runnerCount = 0
+                }else{
+                    runnerCount += 1;
+                }
+            }
+            
+            inning += 1;
+            var inningNow = Math.ceil(inning/2)
+            
+            $(function(){
+                $("#numBut").hide();
+                $("#imgBox").hide();
+                $("#myT").html(myTeamScore);
+                $("#cpuT").html(cpuTeamScore);
+                $("#in"+inningNow).css({background:"white", color:"black"});
+                $("#m"+inningNow).css({background:"white", color:"black"});
+                $("#cR").html(cpuTeamScore);
+                $("#cH").html(cpuHit);
+                $("#cB").html(cpu4Ball);
+                $("#mR").html(myTeamScore);
+                $("#mH").html(myHit);
+                $("#mB").html(my4Ball);
+                
+                for(var i=1; i<10; i++){
+                    $("#m"+i).html(myInn[i-1]);
+                    $("#c"+i).html(cpuInn[i-1]);
+                }
+                $(".numbox").click(function(){
+                    numHtml += $(this).html();
+                    $("#batterScreen").html(numHtml);
+                    batter = numHtml;
+                })
+                
+                $("#cleBut").click(function(){
+                    numHtml = "";
+                    batter = 0;
+                    $("#batterScreen").html("");
+                })
+                
+                $("#readyBut").click(function(){
+                    numHtml = "";
+                    $("#pitcherScreen").html("");
+                    for(var i=0; i<3; i++){
+                        picThink[i] = Math.floor(Math.random() * 99) + 1;
+                    }
+                    pitcher = picThink[0];
+                    picThink.sort();
+                    $("#pitcherScreen").html(picThink[0]+" "+picThink[1]+" "+picThink[2]);
+                    $("#refereeBox").html("Ready!")
+                    $("#readyBut").hide();
+                    $("#numBut").show();
+                })
+                
+                $("#startBut").click(function(){
+                    $("#numBut").hide();
+                    $("#readyBut").show();
+                    $("#imgBox").show();
+                    audioP.play();
+                    $("#inImg").attr('src', 'img/ofde/pic.jpg');
+                    $("#inImg").animate({
+                        left: 150
+                    }, 800, function(){
+                        $("#inImg").attr('src', 'img/ofde/bat.jpg')
+                        audioB.play();
+                        $("#inImg").animate({
+                            left: -150
+                        }, 800, function(){
+                            $("#imgBox").hide();
+                            $("#inImg").css({
+                                "top" : "0px", "left" : "0px" 
+                            })
+                        })
+                    });
+                    
+                    setTimeout(function(){
+                        audioC.play();
+                    }, 1600);
+                    
+                    if(isNaN(batter) || batter == null){
+                        $("#refereeBox").html("Ball!")
+                        ballCount += 1;
+                    }else if(batter < 0 || batter > 99){
+                        $("#refereeBox").html("false swing!")
+                        strikeCount += 1;
+                    }else if(batter == 0){
+                        if(pitcher%5 == 0){
+                            ballCount += 1;
+                            $("#refereeBox").html("Ball!");
+                        }else{
+                            strikeCount += 1;
+                            $("#refereeBox").html("Strike!");
+                        } 
+                    }else{
+                        if(pitcher == 50){
+                            batChe = batter;
+                        } else {
+                            batChe = batter - (pitcher-50)
+                            if(batChe > 99){
+                                batChe -= 99;
+                            }else if(batChe < 1){
+                                batChe += 99;
+                            }
+                        }
+                        
+                        if(batChe >= 49 && batChe <= 51){
+                            $("#refereeBox").html("HOME RUN!")
+                            runnerScore(4,runnerCount)
+                            myHit += 1;
+                            ballCount = 0;
+                            strikeCount = 0;
+                        } else if(batChe >= 47 && batChe <= 53){
+                            $("#refereeBox").html("Triple!")
+                            runnerScore(3,runnerCount)
+                            myHit += 1;
+                            ballCount = 0;
+                            strikeCount = 0;
+                        } else if(batChe >= 44 && batChe <= 56){
+                            $("#refereeBox").html("Doubles!")
+                            runnerScore(2,runnerCount)
+                            myHit += 1;
+                            ballCount = 0;
+                            strikeCount = 0;
+                        } else if(batChe >= 40 && batChe <= 60){
+                            $("#refereeBox").html("Hits!")
+                            myHit += 1;
+                            runnerScore(1,runnerCount)
+                            ballCount = 0;
+                            strikeCount = 0;
+                        } else if(batChe >= 26 && batChe <= 74){
+                            $("#refereeBox").html("Foul!")
+                            if(strikeCount != 2){
+                                strikeCount += 1;
+                            }
+                        } else if(batChe >= 11 && batChe <= 89){
+                            if(batChe < 23){
+                                setTimeout(function(){
+                                    $("#inImg").attr('src', 'img/ofde/gb.jpg')
+                                    $("#imgBox").show()
+                                    $("#inImg").animate({
+                                        left:150
+                                    }, 800, function(){
+                                        $("#imgBox").hide();
+                                        $("#inImg").css({
+                                            "top" : "0px", "left" : "0px" 
+                                        })
+                                    })
+                                }, 1700)
+                                $("#refereeBox").html("Ground Ball, Out!")
+                            } else {
+                                setTimeout(function(){
+                                    $("#inImg").attr('src', 'img/ofde/f.jpg')
+                                    $("#imgBox").show()
+                                    $("#inImg").animate({
+                                        top:150
+                                    }, 800, function(){
+                                        $("#imgBox").hide();
+                                        $("#inImg").css({
+                                            "top" : "0px", "left" : "0px" 
+                                        })
+                                    })
+                                }, 1700)
+                                $("#refereeBox").html("Fly Ball, Out!")
+                            }
+                            outCount += 1;
+                            ballCount = 0;
+                            strikeCount = 0;
+                        } else {
+                            $("#refereeBox").html("false swing!")
+                            strikeCount += 1;
+                        }
+                    }
+                    
+                    if(ballCount == 4){
+                        $("#refereeBox").html("Four ball!")
+                        runnerScore(1,runnerCount)
+                        my4Ball += 1;
+                        ballCount = 0;
+                        strikeCount = 0;
+                    }else if(strikeCount == 3){
+                        $("#refereeBox").html("Strike out!")
+                        outCount += 1;
+                        ballCount = 0;
+                        strikeCount = 0;
+                    }
+                    
+                    $("#myT").html(myTeamScore);
+                    $("#mR").html(myTeamScore);
+                    $("#mH").html(myHit);
+                    $("#mB").html(my4Ball);
+                    $("#m"+inningNow).html(myScoreNow);
+                    
+                    $("#bC"+ballCount).css('background', '#04B404');
+                    $("#sC"+strikeCount).css('background', '#D7DF01');
+                    $("#oC"+outCount).css('background', '#DF0101');
+                    if(ballCount==0 && strikeCount==0){
+                        $(".bsLed").css('background', '#151515');
+                    }
+                    
+                    $("#batterScreen").html(batter);
+                    $("#pitcherScreen").html(pitcher);
+                    
+                    baseBox = [0,0,0]
+                    for(var i=0; i<4; i++){
+                        if(runner[i] == 1) {
+                            $("#one").attr('src', 'img/ofde/basein.png')
+                            baseBox[0] = 1;
+                        }else if(runner[i] == 2){
+                            $("#two").attr('src', 'img/ofde/basein.png')
+                            baseBox[1] = 1;
+                        }else if(runner[i] == 3){
+                            $("#three").attr('src', 'img/ofde/basein.png')
+                            baseBox[2] = 1;
+                        }
+                    }
+                    
+                    if(baseBox[0]==0){
+                            $("#one").attr('src', 'img/ofde/basenull.png')
+                        }
+                    if(baseBox[1]==0){
+                            $("#two").attr('src', 'img/ofde/basenull.png')
+                        }
+                    if(baseBox[2]==0){
+                            $("#three").attr('src', 'img/ofde/basenull.png')
+                        }
+                    
+                    if(inning != 18 && outCount == 3) {
+                        sessionStorage.setItem("myInn"+inningNow, myScoreNow);
+                        sessionStorage.setItem("inning", inning);
+                        sessionStorage.setItem("myTeamScore", myTeamScore);
+                        sessionStorage.setItem("myTeamHit", myHit);
+                        sessionStorage.setItem("myTeam4Ball", my4Ball);
+                        $("#readyBut").hide();
+                        setTimeout(function(){
+                            location.replace('defense.html');
+                            }, 4000);
+                    };
+                    if(inning == 18 && cpuTeamScore < myTeamScore || inning == 18 && outCount == 3) {
+                        sessionStorage.setItem("myInn"+inningNow, myScoreNow);
+                        sessionStorage.setItem("inning", inning);
+                        sessionStorage.setItem("myTeamScore", myTeamScore);
+                        sessionStorage.setItem("myTeamHit", myHit);
+                        sessionStorage.setItem("myTeam4Ball", my4Ball);
+                        $("#readyBut").hide();
+                        setTimeout(function(){
+                           location.replace('finish.html');
+                            }, 4000);
+                    };
+                });
+                $("#backMain").click(function(){
+                        location.replace('main.html');
+                    });
+            });
+            
+        </script>
+    </head>
+    <body>
+      <div id="mainDiv">
+        <div id="dos">FlukeBaseBall<img id="xB" src="img/xBut.jpg"></div>
+        <table id="scoreboard">
+            <tr><th></th><th id="in1">1</th><th id="in2">2</th><th id="in3">3</th><th id="in4">4</th><th id="in5">5</th><th id="in6">6</th><th id="in7">7</th><th id="in8">8</th><th id="in9">9</th><th>R</th><th>H</th><th>B</th></tr>
+            <tr><th>Player</th><td id="m1">0</td><td id="m2">0</td><td id="m3">0</td><td id="m4">0</td><td id="m5">0</td><td id="m6">0</td><td id="m7">0</td><td id="m8">0</td><td id="m9">0</td><td id="mR">0</td><td id="mH">0</td><td id="mB">0</td></tr>
+            <tr><th>PC</th><td id="c1">0</td><td id="c2">0</td><td id="c3">0</td><td id="c4">0</td><td id="c5">0</td><td id="c6">0</td><td id="c7">0</td><td id="c8">0</td><td id="c9">0</td><td id="cR">0</td><td id="cH">0</td><td id="cB">0</td></tr>
+        </table>
+        <img id="main" src="img/ofde/main.jpg">
+        <div id="pitcherScreen"></div>
+        <div id="pitcher"></div>
+        <div id="batterScreen"></div>
+        
+        <div id="imgBox"><img id="inImg" src="img/ofde/pic.jpg"></div>
+        
+        <img class="diamond" id="two" src="img/ofde/basenull.png">
+        <img class="diamond" id="three" src="img/ofde/basenull.png">
+        <img class="diamond" id="one" src="img/ofde/basenull.png">
+        
+        <table id="ballCount">
+            <tr><th>B</th><th class="bsLed" id="bC1"></th><th class="bsLed" id="bC2"></th><th class="bsLed" id="bC3"></th></tr>
+            <tr><th>S</th><th class="bsLed" id="sC1"></th><th class="bsLed" id="sC2"></th></tr>
+            <tr><th>O</th><th class="countLED" id="oC1"></th><th class="countLED" id="oC2"></th></tr>
+        </table>
+        
+        <table id="numBut">
+            <tr><th class="numbox" id="n0">0</th><th class="numbox" id="n1">1</th><th class="numbox" id="n2">2</th><th class="numbox" id="n3">3</th><th class="numbox" id="n4">4</th><th id="cleBut">CLEAR</th></tr>
+            <tr><th class="numbox" id="n5">5</th><th class="numbox" id="n6">6</th><th class="numbox" id="n7">7</th><th class="numbox" id="n8">8</th><th class="numbox" id="n9">9</th><th style="color: crimson" id="startBut">PLAY</th></tr>
+        </table>
+        <div id="readyBut">READY</div>
+        <div id="refereeBox"></div>
+        <div id="backMain">Go back</div>
+      </div>
+    </body>
+</html>

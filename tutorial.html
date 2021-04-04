@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FlukeBaseBall</title>
+        <meta charset="utf-8">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+        <style>
+            #mainDiv{
+                width: 1150px; height: 720px;
+                border: 7px ridge #BDBDBD;
+                background: black;
+            }
+            #dos{
+                z-index: 2;
+                position: absolute;
+                width: 1150px; height: 20px;
+                border-bottom: 3px solid #BDBDBD;
+                background: #0404B4;
+                color: white
+            }
+            #xB{
+                position: absolute;
+                height: 18px; width: 50px;
+                left: 1098px; top:1px;  
+            }
+            #main{
+                width: 800px;
+                position: absolute;
+                top: 150px; left: 60px;
+                z-index: 1;
+            }
+            td, th{
+                border: 2px solid;
+                text-align: center;   
+            }
+            #numBut{
+                z-index: 2;
+                position: absolute;
+                top: 600px; left: 80px;
+                width: 600px;
+                background: gray;
+                color: black;
+                font-size: 30px;
+                border-collapse: collapse
+            }
+            #readyBut{
+                z-index: 2;
+                position: absolute;
+                top: 600px; left: 80px;
+                width: 600px; 
+                background: #1C1C1C;
+                color: crimson;
+                text-align: center;
+                font-size: 70px;
+            }
+            #batterScreen, #pitcherScreen{
+                z-index: 2;
+                border: 10px double white;
+                border-radius: 5px;
+                width: 200px; height: 60px;
+                position: absolute;
+                top: 220px;
+                font-size: 40px;
+                color: white;
+                text-align: center;
+            }
+            #batterScreen{
+                left: 40px;
+            }
+            #pitcherScreen{
+                left: 440px;
+            }           
+            #refereeBox{
+                z-index: 2;
+                border: 15px double #2E64FE;
+                border-radius: 5px;
+                width: 200px; height: 200px;
+                position: absolute;
+                left: 435px; top: 330px;
+                font-size: 40px;
+                color: aliceblue;
+                text-align: center;  
+            }
+            #backMain{
+                z-index: 3;
+                width: 200px;
+                border: 1px solid gray;
+                top: 625px; left: 900px; 
+                position: absolute;
+                background: #1C1C1C;
+                color: crimson;
+                text-align: center;
+                font-size: 30px;
+            }
+            #rM1{
+                border: 10px double white;
+                border-radius: 5px;
+                z-index: 2;
+                position: absolute;
+                text-align: center;
+                font-size: 35px;
+                left: 50px; top: 45px;
+                width: 1050px;
+                color: white;
+            }
+            p{
+                display: inline-block;
+                line-height: 0px;
+                color: crimson;
+            }
+            .rmBut{
+                border: 10px double #A4A4A4;
+                border-radius: 5px;
+                z-index: 2;
+                position: absolute;
+                left: 810px;
+                width: 300px;
+                color: white;
+                font-size: 40px;
+                text-align: center;
+            }
+            #rM2But{
+                top: 200px;
+            }
+            #rM3But{
+                top: 300px;
+            }
+            #rM4But{
+                top: 400px;
+            }
+            .rM{
+                border: 10px double white;
+                border-radius: 5px;
+                z-index: 2;
+                position: absolute;
+                left: 810px;
+                width: 300px;
+                color: white;
+                font-size: 22px;
+                
+            }
+            #rM2{
+                top: 130px;
+            }
+            #rM3{
+                top: 300px;
+            }
+            #rM4{
+                top: 300px;
+            }
+            #rM6{
+                position: absolute;
+                z-index: 2;
+                color: brown;
+                font-size: 20px;
+                top: 150px; left: 40px;
+            }
+            #letPlay{
+                position: absolute;
+                z-index: 2;
+                font-size: 20px;
+                color: white;
+                width: 200px;
+                top: 565px; left: 280px;
+            }
+        </style>
+        <script>
+            var pitcher = 0;
+            var batter = 0;
+            var batChe = 0;
+            var picThink = [0, 0, 0]
+            var numHtml ="";
+                    
+            $(function(){
+                $("#numBut").hide();
+                $("#rM2").hide();
+                $("#rM3").hide();
+                $("#rM4").hide();
+                
+                $("#rM2But").click(function(){
+                    $("#rM2But").hide();
+                    $("#rM3But").hide();
+                    $("#rM4But").hide();
+                    $("#rM2").show();
+                });
+                $("#rM3But").click(function(){
+                    $("#rM2But").hide();
+                    $("#rM3But").hide();
+                    $("#rM4But").hide();
+                    $("#rM3").show();
+                });            
+                $("#rM4But").click(function(){
+                    $("#rM2But").hide();
+                    $("#rM3But").hide();
+                    $("#rM4But").hide();
+                    $("#rM4").show();
+                });
+                
+                $("#rM2").click(function(){
+                    $("#rM2").hide();
+                    $("#rM2But").show();
+                    $("#rM3But").show();
+                    $("#rM4But").show();
+                })              
+                $("#rM3").click(function(){
+                    $("#rM3").hide();
+                    $("#rM2But").show();
+                    $("#rM3But").show();
+                    $("#rM4But").show();
+                })
+                $("#rM4").click(function(){
+                    $("#rM4").hide();
+                    $("#rM2But").show();
+                    $("#rM3But").show();
+                    $("#rM4But").show();
+                })
+                
+                $(".numbox").click(function(){
+                    numHtml += $(this).html();
+                    $("#batterScreen").html(numHtml);
+                    batter = numHtml;
+                })
+                
+                $("#cleBut").click(function(){
+                    numHtml = "";
+                    batter = 0;
+                    $("#batterScreen").html("");
+                })
+                
+                $("#readyBut").click(function(){
+                    numHtml = "";
+                    $("#pitcherScreen").html("");
+                    for(var i=0; i<3; i++){
+                        picThink[i] = Math.floor(Math.random() * 99) + 1;
+                    }
+                    pitcher = picThink[0];
+                    picThink.sort();
+                    $("#pitcherScreen").html(picThink[0]+" "+picThink[1]+" "+picThink[2]);
+                    $("#refereeBox").html("Ready!")
+                    $("#readyBut").hide();
+                    $("#numBut").show();
+                })
+                
+                $("#startBut").click(function(){
+                    $("#numBut").hide();
+                    $("#readyBut").show();
+                    
+                    if(isNaN(batter) || batter == null){
+                        $("#refereeBox").html("Ball!")
+                    }else if(batter < 0 || batter > 99){
+                        $("#refereeBox").html("false swing!")
+                    }else if(batter == 0){
+                        if(pitcher%5 == 0){
+                            $("#refereeBox").html("Ball!");
+                        }else{
+                            $("#refereeBox").html("Strike!");
+                        } 
+                    }else{
+                        if(pitcher == 50){
+                            batChe = batter;
+                        } else {
+                            batChe = batter - (pitcher-50)
+                            if(batChe > 99){
+                                batChe -= 99;
+                            }else if(batChe < 1){
+                                batChe += 99;
+                            }
+                        }
+                        
+                        if(batChe >= 49 && batChe <= 51){
+                            $("#refereeBox").html("HOME RUN!")
+                        } else if(batChe >= 47 && batChe <= 53){
+                            $("#refereeBox").html("Triple!")
+                        } else if(batChe >= 44 && batChe <= 56){
+                            $("#refereeBox").html("Doubles!")
+                        } else if(batChe >= 40 && batChe <= 60){
+                            $("#refereeBox").html("Hits!")
+                        } else if(batChe >= 26 && batChe <= 74){
+                            $("#refereeBox").html("Foul!")
+                        } else if(batChe >= 11 && batChe <= 89){
+                            if(batChe < 23){
+                                $("#refereeBox").html("Ground Ball, Out!")
+                            } else {
+                                $("#refereeBox").html("Fly Ball, Out!")
+                            }
+                        } else {
+                            $("#refereeBox").html("false swing!")
+                        }
+                    }
+                    
+                    $("#batterScreen").html(batter);
+                    $("#pitcherScreen").html(pitcher);
+   
+                });
+                
+                $("#backMain").click(function(){
+                        location.replace('main.html');
+                    });
+            });
+            
+        </script>
+    </head>
+    <body>
+      <div id="mainDiv">
+        <div id="dos">FlukeBaseBall<img id="xB" src="img/xBut.jpg"></div>
+        <img id="main" src="img/ofde/main.jpg">
+        <div id="pitcherScreen"></div>
+        <div id="batterScreen"></div>
+        <div id="rM1">このゲームは<p>投手と打者の数字を比べて</p>勝負をつける方式です。</div>
+        <div id="rM2But" class="rmBut">細かい説明</div>
+        <div id="rM3But" class="rmBut">3個の数字</div>
+        <div id="rM4But" class="rmBut">数字の入力</div>
+        <div id="rM2" class="rM">
+            もし投手が50をえらんだら、<br>
+            「49, 50, 51」がホームラン<br>
+            「47, 48, 52, 53」は三塁打<br>
+            「44~46, 54~56」は二塁打<br>
+            「40~43, 57~60」は安打<br>
+            「26~39, 61~74」はファウル<br>
+            「11~25」はゴロ<br>
+            「75~89」はフライボール<br>
+            「1~10, 90~99」は空振り<br>
+            になります。<br><br>
+            そして、数値は循環します。<br>
+            例えば、投手が99を選んだ時<br>
+            「98，99，１」がホームラン<br>
+            になります。
+       </div>
+       <div id="rM3" class="rM">
+           3個の数字の間のは本当に<br>
+           投手が考えた数字が入っています。<br>
+           運が良ければ同じ数字<br>
+           三つが出るときもあります！</div>
+       <div id="rM4" class="rM">
+           数字の入力は<br>
+           0から99まで<br>
+           入力してください<br>
+       </div>
+       <div id="rM6">ボールを待ったり、故意死球をしたりすることも可能です。 探してみてください！</div>
+        <table id="numBut">
+            <tr><th class="numbox" id="n0">0</th><th class="numbox" id="n1">1</th><th class="numbox" id="n2">2</th><th class="numbox" id="n3">3</th><th class="numbox" id="n4">4</th><th id="cleBut">CLEAR</th></tr>
+            <tr><th class="numbox" id="n5">5</th><th class="numbox" id="n6">6</th><th class="numbox" id="n7">7</th><th class="numbox" id="n8">8</th><th class="numbox" id="n9">9</th><th style="color: crimson" id="startBut">PLAY</th></tr>
+        </table>
+        <div id="letPlay">練習してみましょう！</div>
+        <div id="readyBut">READY</div>
+        <div id="refereeBox"></div>
+        <div id="backMain">GO to play!</div>
+      </div>
+    </body>
+</html>

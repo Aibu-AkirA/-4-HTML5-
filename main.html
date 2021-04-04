@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FlukeBaseBall</title>
+        <meta charset="utf-8">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+        <style>
+            #mainDiv{
+                width: 1150px; height: 720px;
+                border: 7px ridge #BDBDBD;
+                background: black;
+            }
+            #dos{
+                z-index: 2;
+                position: absolute;
+                width: 1150px; height: 20px;
+                border-bottom: 3px solid #BDBDBD;
+                background: #0404B4;
+                color: white
+            }
+            #xB{
+                position: absolute;
+                height: 18px; width: 50px;
+                left: 1098px; top:1px;
+            }
+            #main{
+                max-width: 1150px;
+                z-index: 1;
+                position: absolute;
+                top: 50px
+            }
+            .inning{
+                left: 750px;
+                z-index: 2;
+                position: absolute
+            }
+            #three{
+                top: 90px;
+            }
+            #six{
+                top: 240px;
+            }
+            #nine{
+                top: 390px;
+            }
+            #tut{
+                font-size: 20px;
+                color: white;
+                top: 540px;
+            }
+            .hoAw{
+                left: 720px;
+                z-index: 2;
+                position: absolute
+            }
+            #home{
+                top: 180px;
+            }
+            #away{
+                top: 380px;
+            }
+            
+        </style>
+        <script>
+            sessionStorage.setItem("myTeamScore", 0);
+            sessionStorage.setItem("cpuTeamScore", 0);
+            sessionStorage.setItem("myTeamHit", 0);
+            sessionStorage.setItem("cpuTeamHit", 0);
+            sessionStorage.setItem("myTeam4Ball", 0);
+            sessionStorage.setItem("cpuTeam4Ball", 0);
+            for(var i = 1; i<10; i++){
+                sessionStorage.setItem("myInn"+i, 0);
+                sessionStorage.setItem("cpuInn"+i, 0);
+            }
+            
+            $(function(){
+                $(".hoAw").hide();
+                $("#three").click(function(){
+                    $(".inning").hide();
+                    $(".hoAw").show();
+                    sessionStorage.setItem("inning", 12);
+                })
+                $("#six").click(function(){
+                    $(".inning").hide();
+                    $(".hoAw").show();
+                    sessionStorage.setItem("inning", 4);
+                })
+                $("#nine").click(function(){
+                    $(".inning").hide();
+                    $(".hoAw").show();
+                    sessionStorage.setItem("inning", 0);
+                })
+                $("#home").click(function(){
+                    location.replace('defense.html');
+                })
+                $("#away").click(function(){
+                    location.replace('offensive.html');
+                })
+                $("#tut").click(function(){
+                    location.replace('tutorial.html');
+                })
+            });
+        </script>
+    </head>
+    <body>
+       <div id="mainDiv">
+       <div id="dos">FlukeBaseBall<img id="xB" src="img/xBut.jpg"></div>
+        <img id="main" src="img/main/main.jpg" alt="main" style=";">
+        <img class="inning" id="three" src="img/main/3in.jpg">
+        <img class="inning" id="six" src="img/main/6in.jpg">
+        <img class="inning" id="nine" src="img/main/9in.jpg">
+        <img class="inning" id="tut" src="img/main/tu.jpg">
+        
+        <img class="hoAw" id="home" src="img/main/home.jpg">
+        <img class="hoAw" id="away" src="img/main/away.jpg">
+        </div>
+    </body>
+</html>

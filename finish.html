@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>FlukeBaseBall</title>
+        <meta charset="utf-8">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+        <style>
+            #mainDiv{
+                width: 1150px; height: 720px;
+                border: 7px ridge #BDBDBD;
+                background: black;
+            }
+            #dos{
+                z-index: 2;
+                position: absolute;
+                width: 1150px; height: 20px;
+                border-bottom: 3px solid #BDBDBD;
+                background: #0404B4;
+                color: white
+            }
+            #xB{
+                position: absolute;
+                height: 18px; width: 50px;
+                left: 1098px; top:1px;  
+            }
+            #scoreboard{
+                z-index: 2;
+                position: absolute;
+                top: 530px; left: 250px;
+                width: 700px;
+                background: #071907;
+                color:white;
+                font-size: 30px;
+                border: 2px solid;
+                border-collapse: collapse
+            }
+            td, th{
+                border: 2px solid;
+                text-align: center;   
+            }
+            #mR, #cR, #rR{
+                background-color: white;
+                color: black;
+            } 
+            #win{
+                z-index: 2;
+                position: absolute;
+                color: red;
+                font-size: 150px;
+                width: 450px;
+                left: 355px;
+                text-align: center;
+            }
+            .score{
+                z-index: 2;
+                position: absolute;
+                color: white;
+                font-size: 100px
+            }
+            #team{
+                top: 200px; left: 320px;
+            }
+            #myT{
+                top: 330px; left: 430px;
+            }
+            #cpuT{
+                top: 330px; left: 730px;
+            }
+            #backMain{
+                z-index: 3;
+                width: 200px;
+                border: 1px solid gray;
+                top: 680px; left: 930px; 
+                position: absolute;
+                background: #1C1C1C;
+                color: crimson;
+                text-align: center;
+                font-size: 30px;
+            }
+        </style>
+        <script>
+            var myTeamScore = sessionStorage.getItem("myTeamScore");
+            myTeamScore *= 1;
+            var cpuTeamScore = sessionStorage.getItem("cpuTeamScore");
+            cpuTeamScore *= 1;
+            var cpuHit = sessionStorage.getItem("cpuTeamHit");
+            var cpu4Ball = sessionStorage.getItem("cpuTeam4Ball");
+            var myHit = sessionStorage.getItem("myTeamHit");
+            var my4Ball = sessionStorage.getItem("myTeam4Ball");
+            var myInn = [0,0,0,0,0,0,0,0,0]
+            var cpuInn = [0,0,0,0,0,0,0,0,0]
+            
+            for(var i=1; i<10; i++){
+                myInn[i-1] = sessionStorage.getItem("myInn"+i);
+                myInn[i-1] *=1;
+                cpuInn[i-1] = sessionStorage.getItem("cpuInn"+i)
+                cpuInn[i-1] *=1;
+            }
+            
+            $(function(){
+                $("#myT").html(myTeamScore)
+                $("#cpuT").html(cpuTeamScore)
+                $("#cR").html(cpuTeamScore);
+                $("#cH").html(cpuHit);
+                $("#cB").html(cpu4Ball);
+                $("#mR").html(myTeamScore);
+                $("#mH").html(myHit);
+                $("#mB").html(my4Ball);
+                
+                for(var i=1; i<10; i++){
+                    $("#m"+i).html(myInn[i-1]);
+                    $("#c"+i).html(cpuInn[i-1]);
+                }
+                
+                if(myTeamScore > cpuTeamScore){
+                    $("#win").html("勝");
+                }else if(myTeamScore < cpuTeamScore){
+                    $("#win").html("負");
+                    $("#win").css('color','blue');
+                }else{
+                    $("#win").html("引分け");
+                    $("#win").css('color','green');
+                }
+                
+                $("#backMain").click(function(){
+                        location.replace('main.html');
+                    });
+                
+            });
+        </script>
+    </head>
+    <body>
+      <div id="mainDiv">
+        <div id="dos">FlukeBaseBall<img id="xB" src="img/xBut.jpg"></div>
+        <div id="win">fd</div> 
+        <div class="score" id="team">Player - PC</div>
+        <div class="score" id="myT"></div>
+        <div class="score" id="cpuT"></div>
+        <table id="scoreboard">
+            <tr><th></th><th id="in1">1</th><th id="in2">2</th><th id="in3">3</th><th id="in4">4</th><th id="in5">5</th><th id="in6">6</th><th id="in7">7</th><th id="in8">8</th><th id="in9">9</th><th id="rR">R</th><th>H</th><th>B</th></tr>
+            <tr><th>Player</th><td id="m1">0</td><td id="m2">0</td><td id="m3">0</td><td id="m4">0</td><td id="m5">0</td><td id="m6">0</td><td id="m7">0</td><td id="m8">0</td><td id="m9">0</td><td id="mR">0</td><td id="mH">0</td><td id="mB">0</td></tr>
+            <tr><th>PC</th><td id="c1">0</td><td id="c2">0</td><td id="c3">0</td><td id="c4">0</td><td id="c5">0</td><td id="c6">0</td><td id="c7">0</td><td id="c8">0</td><td id="c9">0</td><td id="cR">0</td><td id="cH">0</td><td id="cB">0</td></tr>
+        </table>
+        <div id="backMain">Go back</div>
+      </div>
+    </body>
+</html>
